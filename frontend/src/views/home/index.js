@@ -7,6 +7,8 @@ import api from "../../service/api";
 import MaterialTable from "material-table";
 import AddBox from "@material-ui/icons/AddBox";
 import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { courseActions } from "Redux@Actions";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -24,13 +26,13 @@ export default function Home() {
   const classes = useStyles();
   const [courses, setCourses] = useState([]);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function getCourses() {
       const response = await api.get("/course");
 
       setCourses(response.data.courses);
-      console.log(response.data.courses);
     }
     getCourses();
   }, []);
@@ -76,7 +78,38 @@ export default function Home() {
                   isFreeAction: true,
                   onClick: () => history.push("app/course/new"),
                 },
+                (rowData) => ({
+                  icon: "edit",
+                  tooltip: "Editar curso",
+                  onClick: (event, rowData) =>
+                    history.push("/app/course/edit/" + rowData.id),
+                }),
+                (rowData) => ({
+                  icon: "delete",
+                  tooltip: "Deletar curso",
+                  onClick: (event, rowData) => {
+                    if (
+                      window.confirm(
+                        `Você tem certeza que deseja excluir o curso ${rowData.description} ?`
+                      )
+                    ) {
+                      dispatch(
+                        courseActions.deleteCourse(
+                          rowData.description,
+                          rowData.id
+                        )
+                      );
+                      const newArrayOfCourses = courses.filter(
+                        (course) => course.id !== rowData.id
+                      );
+                      setCourses(newArrayOfCourses);
+                    }
+                  },
+                }),
               ]}
+              options={{
+                actionsColumnIndex: -1,
+              }}
             />
           </Paper>
           <Typography variant="body1" className={classes.text} color="primary">

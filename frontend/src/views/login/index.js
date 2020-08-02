@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Grid, Typography, Box, Link } from "@material-ui/core";
+import { Grid, Typography, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 
@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LoginPage() {
-  const preventDefault = (event) => event.preventDefault();
 
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -57,7 +56,7 @@ export default function LoginPage() {
       //Fez login
       history.push("/app");
     }
-  }, [loggedIn]);
+  }, [loggedIn, history]);
 
   return (
     <React.Fragment>

@@ -4,6 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Paper } from "@Components/UI";
 import { useHistory } from "react-router-dom";
 import api from "../../../service/api";
+import { useDispatch } from "react-redux";
+import { courseActions } from "Redux@Actions";
+
 import {
   ValidatorForm,
   TextValidator,
@@ -26,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProductCreatePage() {
+export default function CreateCourse() {
   const classes = useStyles();
 
   const [description, setDescription] = useState("");
@@ -37,16 +40,20 @@ export default function ProductCreatePage() {
   const [categories, setCategories] = useState([]);
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    api.post("course/new", {
-      description,
-      date_begin: dateBegin,
-      date_finish: dateFinish,
-      quantity_students: quantityStudents,
-      category_id: category,
-    });
+    var bodyFormData = new FormData();
+
+    bodyFormData.set("description", description);
+    bodyFormData.set("date_begin", dateBegin);
+    bodyFormData.set("date_finish", dateFinish);
+    bodyFormData.set("quantity_students", quantityStudents);
+    bodyFormData.set("category_id", category);
+
+    dispatch(courseActions.createCourse(bodyFormData));
+
+    history.push('/app');
   };
 
   useEffect(() => {
@@ -64,13 +71,11 @@ export default function ProductCreatePage() {
         display="flex"
         alignItems="center"
         justify="center"
-        style={{ textAlign: "center" }}
       >
         <Grid item xs={12} sm={12} md={12} lg={10}>
-          <Grid justify="right" style={{ textAlign: "right" }}>
+          <Grid style={{ textAlign: "right" }}>
             <Button
               type="submit"
-              textAlign="right"
               variant="contained"
               className={classes.button}
               color="primary"
@@ -164,7 +169,7 @@ export default function ProductCreatePage() {
                   errorMessages={["Este campo é obrigatório"]}
                 >
                   {categories.map((category) => (
-                    <MenuItem value={category.id}>
+                    <MenuItem value={category.id} key={category.id}>
                       {category.description}
                     </MenuItem>
                   ))}

@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Course;
-use App\Form\CourseType;
+use App\Exception\AppException;
 use App\Services\CourseService;
 use App\Repository\CourseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,23 +18,35 @@ class CourseController extends AbstractController
     /**
      * @Route("/", name="course_index", methods={"GET"})
      */
-    public function index(CourseRepository $courseRepository): Response
+    public function index(CourseService $service): Response
     {
-        return $this->json([
-            'courses' => $courseRepository->findAll(),
-        ]);
+        try {
+            return $this->json([
+                'courses' => $service->findAllCourses(),
+            ]);
+        } catch (AppException $e) {
+            return $this->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
-     * @Route("/new", name="course_new", methods={"GET","POST"})
+     * @Route("/new", name="course_new", methods={"POST"})
      */
     public function new(Request $request, CourseService $service): Response
     {
-        $course = $service->createCourse($request->request->all());
+        try {
+            $course = $service->createCourse($request->request->all());
 
-        return $this->json([
-            $course
-        ]);
+            return $this->json(
+                $course
+            );
+        } catch (AppException $e) {
+            return $this->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -43,24 +54,35 @@ class CourseController extends AbstractController
      */
     public function show($id, CourseService $service): Response
     {
-        $course = $service->showCourse($id);
+        try {
+            $course = $service->showCourse($id);
 
-        return $this->json([
-            $course
-        ]);
+            return $this->json(
+                $course
+            );
+        } catch (AppException $e) {
+            return $this->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
-     * @Route("/{id}/edit", name="course_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="course_edit", methods={"PUT"})
      */
     public function edit(Request $request, $id, CourseService $service): Response
     {
+        try {
+            $course = $service->updateCourse($request->request->all(), $id);
 
-        $course = $service->updateCourse($request->request->all(), $id);
-
-        return $this->json([
-            $course
-        ]);
+            return $this->json(
+                $course
+            );
+        } catch (AppException $e) {
+            return $this->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -68,10 +90,16 @@ class CourseController extends AbstractController
      */
     public function delete($id, CourseService $service): Response
     {
-        $service->deleteCourse($id);
+        try {
+            $service->deleteCourse($id);
 
-        return $this->json([
-            'success' => 'Registro removido'
-        ]);
+            return $this->json([
+                'success' => 'Registro removido'
+            ]);
+        } catch (AppException $e) {
+            return $this->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }

@@ -12,7 +12,7 @@ import { Provider, useSelector } from "react-redux";
 import { light as ThemeLight } from "@Utils";
 import { store } from "Redux@Helpers";
 import { Dialog, Layout } from "@Components/UI";
-import { LoginPage, HomePage, CreateCourse } from './views';
+import { LoginPage, HomePage, CreateCourse, EditCourse } from './views';
 
 const useStyles = makeStyles((theme) => ({
   globalStyle: {
@@ -46,6 +46,7 @@ function MainContainer(props){
       <Switch>
         <Route exact path={`${match.url}`} component={HomePage} />
         <Route path={`${match.url}/course/new`} component={CreateCourse} />
+        <Route path={`${match.url}/course/edit/:id`} component={EditCourse} />
       </Switch>
     </Layout>
   )
@@ -83,10 +84,6 @@ function AppContainer(props) {
 
 export default function App(props) {
   const appConstants = useContext(AppContext);
-  
-  useEffect(() => {
-    document.title = `v${appConstants.version}`;
-  }, [appConstants.version]);
 
   return (
     <Provider store={store}>
