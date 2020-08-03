@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Paper } from "@Components/UI";
 import { useHistory } from "react-router-dom";
 import api from "../../../service/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { courseActions } from "Redux@Actions";
 
 import {
@@ -42,6 +42,16 @@ export default function CreateCourse() {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const { successCreateCourse } = useSelector(
+    (state) => state.course.courseReducer
+  );
+
+  useEffect(() => {
+    if (successCreateCourse) {
+      history.push("/app");
+    }
+  }, [successCreateCourse, history]);
+
   const handleSubmit = (e) => {
     var bodyFormData = new FormData();
 
@@ -52,8 +62,6 @@ export default function CreateCourse() {
     bodyFormData.set("category_id", category);
 
     dispatch(courseActions.createCourse(bodyFormData));
-
-    history.push('/app');
   };
 
   useEffect(() => {
@@ -66,12 +74,7 @@ export default function CreateCourse() {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        display="flex"
-        alignItems="center"
-        justify="center"
-      >
+      <Grid container display="flex" alignItems="center" justify="center">
         <Grid item xs={12} sm={12} md={12} lg={10}>
           <Grid style={{ textAlign: "right" }}>
             <Button

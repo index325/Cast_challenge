@@ -1,12 +1,10 @@
 import { authConstants } from '../../_constants';
 
-let user = localStorage.getItem('username');
-// let token = localStorage.getItem('token');
+// let user = localStorage.getItem('username');
 
-const initialState = () => ({user})
-    //   return token ? { loggedIn: true, user } : { loggedIn: false };
+// const initialState = () => ({user})
 
-export function auth(state = initialState(), action) {
+export function auth(state = {}, action) {
   switch (action.type) {
     case authConstants.LOGIN_REQUEST:
       return {

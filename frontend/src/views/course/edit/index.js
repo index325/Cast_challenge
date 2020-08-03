@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { format } from "date-fns-tz";
 import { Grid, Typography, Box, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Paper } from "@Components/UI";
@@ -9,7 +10,7 @@ import {
   TextValidator,
   SelectValidator,
 } from "react-material-ui-form-validator";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { courseActions } from "Redux@Actions";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,23 +44,39 @@ export default function EditCourse() {
 
   const history = useHistory();
 
+  const { successEditCourse } = useSelector(
+    (state) => state.course.courseReducer
+  );
+
+  useEffect(() => {
+    ValidatorForm.addValidationRule("isValidDates", (value) => {
+      if (dateFinish < dateBegin || dateBegin > dateFinish) {
+        return false;
+      }
+      return true;
+    });
+  }, [dateFinish, dateBegin]);
+
+  useEffect(() => {
+    if (successEditCourse) {
+      history.push("/app");
+    }
+  }, [successEditCourse, history]);
+
   const handleSubmit = (e) => {
-    var bodyFormData = new FormData();
+    const params = new URLSearchParams();
 
-    bodyFormData.set("description", description);
-    bodyFormData.set("date_begin", dateBegin);
-    bodyFormData.set("date_finish", dateFinish);
-    bodyFormData.set("quantity_students", quantityStudents);
-    bodyFormData.set("category_id", category);
+    params.append("description", description);
+    params.append("date_begin", dateBegin.split("T")[0]);
+    params.append("date_finish", dateFinish.split("T")[0]);
+    params.append("quantity_students", quantityStudents);
+    params.append("category_id", category);
 
-    dispatch(courseActions.editCourse(bodyFormData, id));
-
-    history.push('/app');
+    dispatch(courseActions.editCourse(params, id));
   };
 
   const formatDate = (date) => {
-      console.log(date)
-    const dateUnformatted = new Date(date);
+    const dateUnformatted = new Date(date.split("T")[0] + "T00:00:00");
     const year = new Intl.DateTimeFormat("en", { year: "numeric" }).format(
       dateUnformatted
     );
@@ -93,12 +110,7 @@ export default function EditCourse() {
 
   return (
     <React.Fragment>
-      <Grid
-        container
-        display="flex"
-        alignItems="center"
-        justify="center"
-      >
+      <Grid container display="flex" alignItems="center" justify="center">
         <Grid item xs={12} sm={12} md={12} lg={10}>
           <Grid style={{ textAlign: "right" }}>
             <Button
@@ -118,7 +130,7 @@ export default function EditCourse() {
                   color="primary"
                   variant="h4"
                 >
-                  <span>Cadastro de cursos</span>
+                  <span>Edição de cursos</span>
                 </Typography>
               </Box>
               <ValidatorForm className={classes.form} onSubmit={handleSubmit}>
@@ -151,8 +163,11 @@ export default function EditCourse() {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  validators={["required"]}
-                  errorMessages={["Este campo é obrigatório"]}
+                  validators={["required", "isValidDates"]}
+                  errorMessages={[
+                    "Este campo é obrigatório",
+                    "A data de início não pode ser maior do que a de fim",
+                  ]}
                 />
                 <TextValidator
                   onChange={(e) => {
@@ -169,8 +184,11 @@ export default function EditCourse() {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  validators={["required"]}
-                  errorMessages={["Este campo é obrigatório"]}
+                  validators={["required", "isValidDates"]}
+                  errorMessages={[
+                    "Este campo é obrigatório",
+                    "A data de término não pode ser menor do que a data de início",
+                  ]}
                 />
                 <TextValidator
                   onChange={(e) => {

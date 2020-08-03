@@ -8,7 +8,6 @@ export const courseActions = {
   deleteCourse,
 };
 
-//Login funcion
 function createCourse(bodyFormData) {
   return (dispatch) => {
     dispatch(
@@ -18,29 +17,29 @@ function createCourse(bodyFormData) {
       method: "post",
       url: "http://localhost:8000/course/new",
       data: bodyFormData,
-      headers: { "Content-Type": "multipart/form-data" },
     })
       .then(function (response) {
         dispatch(
           success(
             courseConstants.CREATE_COURSE_SUCCESS,
             "",
-            `Criado! O curso ${response.data.description} foi criado com sucesso!`
+            `O curso ${response.data.description} foi criado com sucesso!`
           )
         );
+        dispatch(success(courseConstants.CREATE_COURSE_CLEAR, "", ""));
       })
-      .catch(function (response) {
+      .catch(function (err) {
         dispatch(
-          failure(courseConstants.CREATE_COURSE_FAILURE, response, {
+          failure(courseConstants.CREATE_COURSE_FAILURE, err, {
             title: "Erro",
-            msg: "Erro ao gravar o curso!",
+            msg: err.response.data.error,
           })
         );
       });
   };
 }
 
-function editCourse(bodyFormData, id) {
+function editCourse(params, id) {
   return (dispatch) => {
     dispatch(
       request(courseConstants.EDIT_COURSE_REQUEST, "", "Editando curso...")
@@ -48,23 +47,23 @@ function editCourse(bodyFormData, id) {
     axios({
       method: "put",
       url: `http://localhost:8000/course/${id}/edit`,
-      data: bodyFormData,
-      headers: { "Content-Type": "multipart/form-data" },
+      data: params,
     })
       .then(function (response) {
         dispatch(
           success(
             courseConstants.EDIT_COURSE_SUCCESS,
             "Sucesso!",
-            `Editado! O curso ${response.description} foi criado com sucesso!`
+            `O curso ${response.data.description} foi editado com sucesso!`
           )
         );
+        dispatch(success(courseConstants.EDIT_COURSE_CLEAR, "", ""));
       })
-      .catch(function (response) {
+      .catch(function (err) {
         dispatch(
-          failure(courseConstants.EDIT_COURSE_FAILURE, response, {
+          failure(courseConstants.EDIT_COURSE_FAILURE, err.response, {
             title: "Erro",
-            msg: "Erro ao editar o curso!",
+            msg: err.response.data.error,
           })
         );
       });

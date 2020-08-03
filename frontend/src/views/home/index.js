@@ -1,5 +1,6 @@
 import React, { useEffect, useState, forwardRef } from "react";
 
+import { format } from "date-fns-tz";
 import { Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper } from "@Components/UI";
@@ -54,11 +55,29 @@ export default function Home() {
               icons={tableIcons}
               columns={[
                 { title: "Descrição", field: "description" },
-                { title: "Data de início ", field: "dateBegin", type: "date" },
+                {
+                  title: "Data de início ",
+                  field: "dateBegin",
+                  render: (rowData) => {
+                    const date = new Date(
+                      rowData.dateBegin.split("T")[0] + "T00:00:00"
+                    );
+                    return format(date, "dd/MM/yyyy", {
+                      timeZone: "America/Sao_Paulo",
+                    });
+                  },
+                },
                 {
                   title: "Data de término ",
                   field: "dateFinish",
-                  type: "date",
+                  render: (rowData) => {
+                    const date = new Date(
+                      rowData.dateFinish.split("T")[0] + "T00:00:00"
+                    );
+                    return format(date, "dd/MM/yyyy", {
+                      timeZone: "America/Sao_Paulo",
+                    });
+                  },
                 },
                 {
                   title: "Quantidade de alunos por turma",
