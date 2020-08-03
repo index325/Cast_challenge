@@ -27,7 +27,7 @@ class CourseController extends AbstractController
         } catch (AppException $e) {
             return $this->json([
                 'error' => $e->getMessage()
-            ]);
+            ], 400);
         }
     }
 
@@ -45,7 +45,7 @@ class CourseController extends AbstractController
         } catch (AppException $e) {
             return $this->json([
                 'error' => $e->getMessage()
-            ]);
+            ], 400);
         }
     }
 
@@ -63,7 +63,7 @@ class CourseController extends AbstractController
         } catch (AppException $e) {
             return $this->json([
                 'error' => $e->getMessage()
-            ]);
+            ], 400);
         }
     }
 
@@ -81,7 +81,7 @@ class CourseController extends AbstractController
         } catch (AppException $e) {
             return $this->json([
                 'error' => $e->getMessage()
-            ]);
+            ], 400);
         }
     }
 
@@ -99,7 +99,7 @@ class CourseController extends AbstractController
         } catch (AppException $e) {
             return $this->json([
                 'error' => $e->getMessage()
-            ]);
+            ], 400);
         }
     }
 }

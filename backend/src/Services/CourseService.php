@@ -41,7 +41,7 @@ class CourseService extends BaseService
         $course->setDescription($data['description']);
         $course->setDateFinish($data['date_finish']);
         $course->setDateBegin($data['date_begin']);
-        $course->setQuantityStudents($data['quantity_students']);
+        $course->setQuantityStudents($data['quantity_students'] ? $data['quantity_students'] : 0);
 
         $category = $this->getCategoryRepository()->find($data['category_id']);
 
@@ -63,7 +63,7 @@ class CourseService extends BaseService
 
     public function updateCourse($data, $id)
     {
-        $alreadyHaveACourseInTheSameInterval = $this->getRepository()->verifyIfAlreadyHaveACourseInTheSameInterval($data['date_begin'], $data['date_finish']);
+        $alreadyHaveACourseInTheSameInterval = $this->getRepository()->verifyIfAlreadyHaveACourseInTheSameInterval($data['date_begin'], $data['date_finish'], $id);
 
         if ($alreadyHaveACourseInTheSameInterval) {
             throw new AppException('Existe(m) curso(s) planejados(s) dentro do período informado.');
@@ -73,7 +73,7 @@ class CourseService extends BaseService
         $course->setDescription($data['description']);
         $course->setDateFinish($data['date_finish']);
         $course->setDateBegin($data['date_begin']);
-        $course->setQuantityStudents($data['quantity_students']);
+        $course->setQuantityStudents($data['quantity_students'] ? $data['quantity_students'] : 0);
 
         $category = $this->getCategoryRepository()->find($data['category_id']);
 

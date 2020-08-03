@@ -19,15 +19,18 @@ class CourseRepository extends ServiceEntityRepository
         parent::__construct($registry, Course::class);
     }
 
-    public function verifyIfAlreadyHaveACourseInTheSameInterval($dateFrom, $dateTo)
+    public function verifyIfAlreadyHaveACourseInTheSameInterval($dateFrom, $dateTo, $id = null)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.date_begin >= :begin')
+        $qb = $this->createQueryBuilder('c');
+        $qb->andWhere('c.date_begin >= :begin')
             ->setParameter('begin', $dateFrom)
-            ->andWhere('c.date_finish >= :finish')
-            ->setParameter('finish', $dateTo)
-            ->getQuery()
+            ->andWhere('c.date_finish <= :finish')
+            ->setParameter('finish', $dateTo);
+        if ($id) {
+            $qb->andWhere('c.id != :id')
+                ->setParameter('id', $id);
+        }
+        return $qb->getQuery()
             ->getResult();
     }
-
 }
