@@ -126,6 +126,33 @@ export default function Home() {
                   },
                 }),
               ]}
+              localization={{
+                pagination: {
+                  labelDisplayedRows: "{from}-{to} de {count}",
+                  labelRowsSelect: "registros",
+                  firstAriaLabel: "Primeira página",
+                  firstTooltip: "Primeira página",
+                  previousAriaLabel: "Ir para a página anterior",
+                  previousTooltip: "Ir para a página anterior",
+                  nextAriaLabel: "Próxima página",
+                  nextTooltip: "Próxima página",
+                  lastAriaLabel: "Última página",
+                  lastTooltip: "Última página",
+                },
+                header: {
+                  actions: "Ações",
+                },
+                toolbar: {
+                  searchTooltip: "Buscar",
+                  searchPlaceholder: "Buscar",
+                },
+                body: {
+                  emptyDataSourceMessage: "Nenhum registro encontrado",
+                  filterRow: {
+                    filterTooltip: "Filtrar",
+                  },
+                },
+              }}
               options={{
                 actionsColumnIndex: -1,
               }}
