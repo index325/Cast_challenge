@@ -226,7 +226,7 @@ export default function EditCourse() {
                   variant="contained"
                   className={classes.button}
                   color="primary"
-                  label="CADASTRAR"
+                  label="SALVAR"
                 />
               </ValidatorForm>
             </Paper>
